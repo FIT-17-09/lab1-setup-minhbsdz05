@@ -4,11 +4,7 @@
 
 - Tên nhóm: Nhóm 8
 - Lớp: CNTT 17-09
-- Thành viên:
-  Nguyễn Xuân Phúc
-  Nguyễn Thị Hảo Ngân
-  Hoàng Anh Minh
-  Nguyễn Kiều Phong
+- Thành viên: Nguyễn Xuân Phúc, Nguyễn Thị Hảo Ngân, Hoàng Anh Minh, Nguyễn Kiều Phong
 - Service nhóm phụ trách: Dịch vụ tiếp nhận dữ liệu IoT
 - Sản phẩm tổng thể của lớp: Hệ thống Giám sát và Phân tích dữ liệu IoT tập trung
 
@@ -16,17 +12,17 @@
 
 Ai tương tác với hệ thống/service?
 
-Thiết bị IoT: Gửi dữ liệu telemetry (nhiệt độ, độ ẩm, vị trí...) về hệ thống.
+- Thiết bị IoT: Gửi dữ liệu telemetry (nhiệt độ, độ ẩm, vị trí...) về hệ thống.
 
-Cổng vào: Các thiết bị trung gian tập hợp dữ liệu từ nhiều node cảm biến trước khi gửi lên Cloud.
+- Cổng vào: Các thiết bị trung gian tập hợp dữ liệu từ nhiều node cảm biến trước khi gửi lên Cloud.
 
-Hệ thống Quản trị: Tương tác để cấu hình các ngưỡng tiếp nhận hoặc quản lý danh sách thiết bị được phép kết nối.
+- Hệ thống Quản trị: Tương tác để cấu hình các ngưỡng tiếp nhận hoặc quản lý danh sách thiết bị được phép kết nối.
 
 ## 3. System Boundary
 
 Nhóm em xây phần nào?
 
-Nhóm tập trung vào việc xây dựng bộ phận tiếp nhận dữ liệu hiệu năng cao, đảm bảo không làm mất mát dữ liệu khi có lượng lớn thiết bị gửi tin cùng lúc.
+- Nhóm tập trung vào việc xây dựng bộ phận tiếp nhận dữ liệu hiệu năng cao, đảm bảo không làm mất mát dữ liệu khi có lượng lớn thiết bị gửi tin cùng lúc.
 
 Phần nhóm kiểm soát:
 
@@ -38,7 +34,7 @@ Phần nhóm kiểm soát:
 Phần nhóm chỉ tích hợp:
 
 - Dịch vụ xác thực tập trung của lớp (Identity Service).
-  -Cơ sở dữ liệu Time-series (InfluxDB/TimescaleDB) do nhóm khác quản lý.
+- Cơ sở dữ liệu Time-series (InfluxDB/TimescaleDB) do nhóm khác quản lý.
 
 ## 4. Service Boundary
 
@@ -101,11 +97,12 @@ Service này gọi đến service nào?
 
 ## 8. Sơ đồ minh họa
 
+```mermaid
 flowchart TD
-subgraph "Thiết bị ngoại vi"
-Sensors[Cảm biến/Thiết bị IoT]
-GW[IoT Gateway]
-end
+    subgraph "Thiết bị ngoại vi"
+        Sensors[Cảm biến/Thiết bị IoT]
+        GW[IoT Gateway]
+    end
 
     subgraph "Ingestion Service (Nhóm đảm nhiệm)"
         MQTT[MQTT Broker/HTTP API]
@@ -126,3 +123,4 @@ end
     Validator --> Queue
     Queue --> Storage
     Queue --> Analysis
+```
