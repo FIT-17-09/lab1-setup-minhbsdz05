@@ -4,7 +4,7 @@
 
 - Tên nhóm: Nhóm 8
 - Lớp: CNTT 17-09
-- Thành viên: Nguyễn Xuân Phúc, Nguyễn Thị Hảo Ngân, Hoàng Anh Minh, Nguyễn Kiều Phong
+- Thành viên: Nguyễn Xuân Phúc, Nguyễn Thị Hảo Ngân, Hoàng Anh Minh, Nguyễn Kiều Phong.
 - Service nhóm phụ trách: Dịch vụ tiếp nhận dữ liệu IoT
 - Sản phẩm tổng thể của lớp: Hệ thống Giám sát và Phân tích dữ liệu IoT tập trung
 
