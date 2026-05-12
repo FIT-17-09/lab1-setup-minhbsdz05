@@ -7,9 +7,9 @@ Thư mục này dùng để nộp minh chứng thiết lập môi trường lab.
 - Họ tên: Hoàng Anh Minh
 - Mã sinh viên: 1771020482
 - Nhóm: Nhóm 8
-- Vai trò dự kiến trong nhóm:
-- Hệ điều hành: Window
-- Ghi chú:
+- Vai trò dự kiến trong nhóm: Thành Viên
+- Hệ điều hành: Microsoft Windows
+- Ghi chú: Null
 
 ## Các file minh chứng nên có
 
