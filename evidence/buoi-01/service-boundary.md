@@ -13,9 +13,7 @@
 Ai tương tác với hệ thống/service?
 
 - Thiết bị IoT: Gửi dữ liệu telemetry (nhiệt độ, độ ẩm, vị trí...) về hệ thống.
-
 - Cổng vào: Các thiết bị trung gian tập hợp dữ liệu từ nhiều node cảm biến trước khi gửi lên Cloud.
-
 - Hệ thống Quản trị: Tương tác để cấu hình các ngưỡng tiếp nhận hoặc quản lý danh sách thiết bị được phép kết nối.
 
 ## 3. System Boundary
@@ -41,37 +39,28 @@ Phần nhóm chỉ tích hợp:
 Service của nhóm có trách nhiệm gì?
 
 - Duy trì kết nối ổn định với hàng ngàn thiết bị đồng thời.
-
 - Kiểm tra tính hợp lệ của gói tin (Validation).
-
 - Chuyển đổi giao thức (ví dụ: từ MQTT sang Message lưu trong Queue).
-
 - Ghi log trạng thái hoạt động của thiết bị (Online/Offline).
 
 Service KHÔNG làm gì?
 
 - Không thực hiện phân tích dữ liệu (Analytics).
-
 - Không vẽ biểu đồ hiển thị (Visualization).
-
 - Không quản lý thông tin cá nhân của người dùng (User Management).
-
 - Không lưu trữ dữ liệu lịch sử lâu dài (Long-term Storage).
 
 ## 5. Input / Output
 
 ### Input
 
-- Gói tin JSON từ thiết bị (Ví dụ: {"device_id": "sensor_01", "temp": 25.5, "timestamp": 1715386140}).
-
+- Gói tin JSON từ thiết bị (Ví dụ: `{"device_id": "sensor_01", "temp": 25.5, "timestamp": 1715386140}`).
 - Thông tin xác thực (Header Token hoặc MQTT Username/Password).
 
 ### Output
 
 - Phản hồi xác nhận tiếp nhận (ACK - Acknowledgment).
-
 - Dữ liệu đã chuẩn hóa đẩy vào Message Broker cho các service khác tiêu thụ.
-
 - Thông báo lỗi nếu dữ liệu không hợp lệ hoặc thiết bị chưa được đăng ký.
 
 ## 6. API dự kiến
@@ -88,15 +77,12 @@ Service KHÔNG làm gì?
 Service này gọi đến service nào?
 
 - Service này gọi đến: Identity Service (để xác thực thiết bị).
-
 - Service này đẩy dữ liệu cho: Storage Service và Alert Service (thông qua Message Broker).
-
 - Service nào gọi đến service này: Device Management Service (để cập nhật cấu hình tiếp nhận).
-
-- Service nào gọi đến service này?
 
 ## 8. Sơ đồ minh họa
 
+```mermaid
 flowchart TD
     %% Định nghĩa CSS cho các component để dễ nhìn
     classDef ingestion fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
