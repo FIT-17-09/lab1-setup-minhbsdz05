@@ -99,28 +99,90 @@ Service này gọi đến service nào?
 
 ```mermaid
 flowchart TD
-    subgraph "Thiết bị ngoại vi"
-        Sensors[Cảm biến/Thiết bị IoT]
-        GW[IoT Gateway]
+    %% Định nghĩa CSS cho các component để dễ nhìn
+    classDef ingestion fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
+    classDef external fill:#f5f5f5,stroke:#9e9e9e,stroke-width:1px;
+    classDef other fill:#e8f5e9,stroke:#4caf50,stroke-width:1px;
+
+    subgraph EdgeLayer ["1. Thiết bị ngoại vi (Edge Layer)"]
+        direction TB
+        Sensors["Cảm biến/Thiết bị IoT\n(Nhiệt độ, Độ ẩm, GPS...)"]
+        GW["IoT Gateway\n(Gom cụm & Tiền xử lý tại biên)"]
     end
 
-    subgraph "Ingestion Service (Nhóm đảm nhiệm)"
-        MQTT[MQTT Broker/HTTP API]
-        Validator[Bộ kiểm tra & Chuẩn hóa]
-        Queue[Message Queue - Kafka/RabbitMQ]
+    subgraph IngestionService ["2. Dịch vụ Tiếp nhận dữ liệu (Ingestion Service - Nhóm phụ trách)"]
+        direction TB
+        LB["Load Balancer / API Gateway\n(Điều phối lưu lượng)"]
+        
+        subgraph Adapters ["Protocol Adapters (Giao thức kết nối)"]
+            direction LR
+            MQTT["MQTT Broker\n(Mosquitto/EMQX)"]
+            HTTP["HTTP/REST API"]
+            CoAP["CoAP Endpoint"]
+        end
+        
+        AuthFilter["Security Filter\n(Xác thực Token/Chứng chỉ)"]
+        RateLimit["Rate Limiter\n(Chống Spam/DDoS)"]
+        
+        subgraph Pipeline ["Data Processing Pipeline (Tiền xử lý)"]
+            direction TB
+            Validator["Schema Validator\n(Kiểm tra tính hợp lệ dữ liệu)"]
+            Normalizer["Data Normalizer\n(Chuẩn hóa định dạng JSON chung)"]
+        end
+        
+        subgraph Queues ["Message Queues (Hàng đợi)"]
+            direction LR
+            Kafka["Main Message Bus\n(Kafka Topics / RabbitMQ)"]
+            DLQ["Dead Letter Queue (DLQ)\n(Lưu trữ dữ liệu lỗi/rác)"]
+        end
     end
 
-    subgraph "Các Service khác trong lớp"
-        Auth[Identity Service]
-        Storage[Storage Service]
-        Analysis[Analytics Service]
+    subgraph CoreServices ["3. Các Service khác trong hệ thống tổng thể"]
+        direction TB
+        Auth["Identity & Device Mgt\n(Quản lý thiết bị & User)"]
+        
+        subgraph StorageLayer ["Storage Service (Lưu trữ)"]
+            direction LR
+            TSDB["Time-Series DB\n(Dữ liệu nóng)"]
+            DataLake["Data Lake\n(Dữ liệu lạnh/Backup)"]
+        end
+        
+        subgraph AnalyticsLayer ["Analytics Service (Phân tích)"]
+            direction LR
+            Realtime["Stream Processing\n(Phân tích thời gian thực)"]
+            Batch["Batch Processing\n(Báo cáo thống kê)"]
+        end
     end
 
-    Sensors -- "Dữ liệu thô" --> MQTT
-    GW -- "Dữ liệu thô" --> MQTT
-    MQTT --> Validator
-    Validator -- "Xác thực" --> Auth
-    Validator --> Queue
-    Queue --> Storage
-    Queue --> Analysis
+    %% --- Kết nối luồng dữ liệu ---
+    
+    %% Từ thiết bị đến Ingestion
+    Sensors -- "Dữ liệu thô (MQTT/CoAP)" --> LB
+    GW -- "Dữ liệu thô (HTTPS/MQTT)" --> LB
+    
+    %% Phân luồng giao thức
+    LB --> MQTT & HTTP & CoAP
+    MQTT & HTTP & CoAP --> AuthFilter
+    
+    %% Xác thực
+    AuthFilter -- "Xác thực thiết bị" <--> Auth
+    AuthFilter -- "Hợp lệ" --> RateLimit
+    AuthFilter -. "Từ chối" .-> Drop("Drop Connection")
+    
+    %% Xử lý luồng
+    RateLimit --> Validator
+    Validator -- "Đúng Schema" --> Normalizer
+    Validator -- "Sai Schema / Lỗi" --> DLQ
+    Normalizer --> Kafka
+    
+    %% Phân phối từ Queue ra toàn hệ thống (Fan-out)
+    Kafka === "Tiêu thụ (Consume)" ===> TSDB
+    Kafka === "Tiêu thụ (Consume)" ===> DataLake
+    Kafka === "Tiêu thụ (Consume)" ===> Realtime
+    Kafka === "Tiêu thụ (Consume)" ===> Batch
+
+    %% Gán class màu sắc
+    class EdgeLayer,Sensors,GW,Drop external;
+    class IngestionService,LB,MQTT,HTTP,CoAP,AuthFilter,RateLimit,Validator,Normalizer,Kafka,DLQ,Adapters,Pipeline,Queues ingestion;
+    class CoreServices,Auth,TSDB,DataLake,Realtime,Batch,StorageLayer,AnalyticsLayer other;
 ```
