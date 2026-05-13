@@ -150,7 +150,7 @@ flowchart TD
     MQTT & HTTP & CoAP --> AuthFilter
 
     %% Xác thực
-    AuthFilter -- "Xác thực thiết bị" <--> Auth
+    AuthFilter <-- "Xác thực thiết bị" --> Auth
     AuthFilter -- "Hợp lệ" --> RateLimit
     AuthFilter -. "Từ chối" .-> Drop("Drop Connection")
 
@@ -161,10 +161,10 @@ flowchart TD
     Normalizer --> Kafka
 
     %% Phân phối từ Queue ra toàn hệ thống (Fan-out)
-    Kafka === "Tiêu thụ (Consume)" ===> TSDB
-    Kafka === "Tiêu thụ (Consume)" ===> DataLake
-    Kafka === "Tiêu thụ (Consume)" ===> Realtime
-    Kafka === "Tiêu thụ (Consume)" ===> Batch
+    Kafka == "Tiêu thụ (Consume)" ==> TSDB
+    Kafka == "Tiêu thụ (Consume)" ==> DataLake
+    Kafka == "Tiêu thụ (Consume)" ==> Realtime
+    Kafka == "Tiêu thụ (Consume)" ==> Batch
 
     %% Gán class màu sắc
     class EdgeLayer,Sensors,GW,Drop external;
