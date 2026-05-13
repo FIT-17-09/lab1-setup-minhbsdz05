@@ -96,6 +96,7 @@ Service này gọi đến service nào?
 - Service nào gọi đến service này?
 
 ## 8. Sơ đồ minh họa
+
 flowchart TD
     %% Định nghĩa CSS cho các component để dễ nhìn
     classDef ingestion fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
@@ -153,26 +154,26 @@ flowchart TD
     end
 
     %% --- Kết nối luồng dữ liệu ---
-    
+
     %% Từ thiết bị đến Ingestion
     Sensors -- "Dữ liệu thô (MQTT/CoAP)" --> LB
     GW -- "Dữ liệu thô (HTTPS/MQTT)" --> LB
-    
+
     %% Phân luồng giao thức
     LB --> MQTT & HTTP & CoAP
     MQTT & HTTP & CoAP --> AuthFilter
-    
+
     %% Xác thực
     AuthFilter -- "Xác thực thiết bị" <--> Auth
     AuthFilter -- "Hợp lệ" --> RateLimit
     AuthFilter -. "Từ chối" .-> Drop("Drop Connection")
-    
+
     %% Xử lý luồng
     RateLimit --> Validator
     Validator -- "Đúng Schema" --> Normalizer
     Validator -- "Sai Schema / Lỗi" --> DLQ
     Normalizer --> Kafka
-    
+
     %% Phân phối từ Queue ra toàn hệ thống (Fan-out)
     Kafka === "Tiêu thụ (Consume)" ===> TSDB
     Kafka === "Tiêu thụ (Consume)" ===> DataLake
@@ -183,9 +184,3 @@ flowchart TD
     class EdgeLayer,Sensors,GW,Drop external;
     class IngestionService,LB,MQTT,HTTP,CoAP,AuthFilter,RateLimit,Validator,Normalizer,Kafka,DLQ,Adapters,Pipeline,Queues ingestion;
     class CoreServices,Auth,TSDB,DataLake,Realtime,Batch,StorageLayer,AnalyticsLayer other;
-
-    %% Gán class màu sắc
-    class EdgeLayer,Sensors,GW,Drop external;
-    class IngestionService,LB,MQTT,HTTP,CoAP,AuthFilter,RateLimit,Validator,Normalizer,Kafka,DLQ,Adapters,Pipeline,Queues ingestion;
-    class CoreServices,Auth,TSDB,DataLake,Realtime,Batch,StorageLayer,AnalyticsLayer other;
-```
