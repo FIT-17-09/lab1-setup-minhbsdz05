@@ -96,8 +96,6 @@ Service này gọi đến service nào?
 - Service nào gọi đến service này?
 
 ## 8. Sơ đồ minh họa
-
-```mermaid
 flowchart TD
     %% Định nghĩa CSS cho các component để dễ nhìn
     classDef ingestion fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
@@ -180,6 +178,11 @@ flowchart TD
     Kafka === "Tiêu thụ (Consume)" ===> DataLake
     Kafka === "Tiêu thụ (Consume)" ===> Realtime
     Kafka === "Tiêu thụ (Consume)" ===> Batch
+
+    %% Gán class màu sắc
+    class EdgeLayer,Sensors,GW,Drop external;
+    class IngestionService,LB,MQTT,HTTP,CoAP,AuthFilter,RateLimit,Validator,Normalizer,Kafka,DLQ,Adapters,Pipeline,Queues ingestion;
+    class CoreServices,Auth,TSDB,DataLake,Realtime,Batch,StorageLayer,AnalyticsLayer other;
 
     %% Gán class màu sắc
     class EdgeLayer,Sensors,GW,Drop external;
